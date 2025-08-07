@@ -4,39 +4,47 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"pokedex-go/internal/pokeapi"
 	"strings"
+	"time"
 )
 
-func main(){
-	scan := bufio.NewScanner(os.Stdin)
+func main() {
+	pokeClient := pokeapi.NewClient(5 * time.Second)
+	cfg := &config{
+		pokeApiClient: pokeClient,
+		areaMapNext: "default",
+		areaMapPrevous: "default",
+	}
+	repl(cfg)
+}
+
+func repl(cfg *config) {
+	reader := bufio.NewScanner(os.Stdin)
 	for {
 		fmt.Print("Pokedex > ")
-		scan.Scan()
-		input := scan.Text()
+		reader.Scan()
+		input := reader.Text()
 		cleaned := cleanInput(input)
-		
+
 		if len(cleaned) == 0 {
 			fmt.Println("Please enter a command.")
 			continue
 		}
 
-		found := false
-		for name, cmd := range commands {
-			if name == cleaned[0] {
-				cmd.callback()
-				found = true
-				break
+		cmd, exists := getCommands()[cleaned[0]]
+		if exists {
+			err := cmd.callback(cfg)
+			if err != nil {
+				fmt.Println(err)
 			}
-		}
-
-		if !found {
+			continue
+		} else {
 			fmt.Println("Unknown command")
+			continue
 		}
-
-
 	}
 }
-
 
 func cleanInput(text string) []string {
 	lowerText := strings.ToLower(text)
