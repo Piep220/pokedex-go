@@ -23,6 +23,17 @@ func (c *Client)GetAreaPage(url string) (*LocationAreaPage, error) {
 		return nil, fmt.Errorf("location Area URL, %s is not a valid url", url)
 	}
 
+
+	val, ok := c.pokeCache.Get(url)
+	if ok {
+		areaPage := LocationAreaPage{}
+		err := json.Unmarshal(val, &areaPage)
+		if err != nil {
+			return nil, fmt.Errorf("error unmarshalling JSON from cache, %s", err)
+		}
+		return &areaPage, nil
+	}
+
 	//resp, err := http.Get(url)
 	//if err != nil {
 	//	return &areaPage, fmt.Errorf("error getting url: %s", err)
@@ -44,6 +55,8 @@ func (c *Client)GetAreaPage(url string) (*LocationAreaPage, error) {
 	if err != nil {
 		return nil, fmt.Errorf("error reading JSON, %s", err)
 	}
+
+	c.pokeCache.Add(url, data)
 
 	areaPage := LocationAreaPage{}
 	err = json.Unmarshal(data, &areaPage)

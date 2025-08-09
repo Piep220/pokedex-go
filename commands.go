@@ -1,6 +1,6 @@
 package main
 
-import(
+import (
 	"fmt"
 	"os"
 	"pokedex-go/internal/pokeapi"
@@ -18,13 +18,14 @@ type config struct{
 	areaMapPrevous string
 }
 
-func commandExit(*config) error {
+func commandExit(cfg *config) error {
 	fmt.Print("Closing the Pokedex... Goodbye!\n")
+	cfg.pokeApiClient.Stop()
 	os.Exit(0)
 	return nil
 }
 
-func commandHelp(*config) error {
+func commandHelp(cfg *config) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")
@@ -36,7 +37,7 @@ func commandHelp(*config) error {
 }
 
 func commandMap(cfg *config) error {
-	next_url := pokeapi.BaseURL + "/location-area"
+	next_url := pokeapi.BaseURL + "/location-area?offset=0&limit=20"
 	switch cfg.areaMapNext {
 	case "default":
 		//do nothing
