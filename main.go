@@ -32,9 +32,14 @@ func repl(cfg *config) {
 			continue
 		}
 
+		args := []string{}
+		if len(cleaned) > 1 {
+			args = cleaned[1:]
+		}
+
 		cmd, exists := getCommands()[cleaned[0]]
 		if exists {
-			err := cmd.callback(cfg)
+			err := cmd.callback(cfg, args...)
 			if err != nil {
 				fmt.Println(err)
 			}
