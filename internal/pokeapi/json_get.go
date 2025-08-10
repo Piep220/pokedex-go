@@ -15,7 +15,7 @@ func getJSON[T any](c *Client, url string) (*T, error) {
 		return nil, fmt.Errorf("base URL, %s is not valid", url)
 	}
 
-	v, ok := c.pokeCache.Get(url);
+	v, ok := c.pokeCache.Get(url)
     if ok {
         var out T
 		err := json.Unmarshal(v, &out)

@@ -12,10 +12,11 @@ type cliCommand struct {
 	callback    func(*config, ...string) error
 } 
 
-type config struct{
+type config struct {
 	pokeApiClient  pokeapi.Client
 	areaMapNext    string
 	areaMapPrevous string
+	pokedex		   pokedex
 }
 
 func commandExit(cfg *config, args ...string) error {
@@ -62,6 +63,16 @@ func getCommands() map[string]cliCommand {
 			name:        "explore",
 			description: "Displays a list of the pokemon in a given region",
 			callback:    commandExplore,
+		},
+		"catch": {
+			name:        "catch",
+			description: "Attempt to catch a pokemon, by name.",
+			callback:    commandCatch,
+		},
+		"pokedex": {
+			name:        "pokedex",
+			description: "Shows the contence of the pokedex.",
+			callback:    commandPokedex,
 		},
 	}
 }
