@@ -16,7 +16,7 @@ func expToProb(exp float64, mu, sigma float64) float64 {
 }
 
 func tryCatch(baseExp float64, ballMod, statusMod float64) bool {
-	var mu, sigma float64 = 100.0, 80.0
+	var mu, sigma float64 = 125.0, 60.0
 	mu *= statusMod
 	sigma *= ballMod
     p := expToProb(baseExp, mu, sigma)
@@ -29,6 +29,9 @@ func tryCatch(baseExp float64, ballMod, statusMod float64) bool {
 }
 
 func commandCatch(cfg *config, args ...string) error {
+	if len(args) != 1 {
+		return fmt.Errorf("you must provide a pokemon name")
+	}
 	pokemonName := args[0]
 
 	ok, err := cfg.pokeApiClient.VerifyPokemonName(pokemonName)
@@ -42,7 +45,7 @@ func commandCatch(cfg *config, args ...string) error {
 	}
 
 	
-	fmt.Printf("Throwing a Pokeball at %s...", pokemonName)
+	fmt.Printf("Throwing a Pokeball at %s... ", pokemonName)
 
 	//Get pokemon details
 	pokemonDetails, err := cfg.pokeApiClient.GetPokemonDetails(pokemonName)
